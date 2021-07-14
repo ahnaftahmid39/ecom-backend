@@ -21,7 +21,7 @@ module.exports.validate = product => {
     const schema = Joi.object({
         name: Joi.string().min(3).max(255).required(),
         description: Joi.string().max(2000).required(),
-        price: Joi.number().require(),
+        price: Joi.number().required(),
         quantity: Joi.number().required(),
         category: Joi.string().required(),
     });
