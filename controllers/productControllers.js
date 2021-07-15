@@ -35,6 +35,7 @@ module.exports.createProduct = async (req, res) => {
           return res.status(201).send({
             message: 'Product successfully created',
             data: _.pick(result, [
+              '_id',
               'name',
               'description',
               'price',
@@ -50,14 +51,109 @@ module.exports.createProduct = async (req, res) => {
   });
 };
 
+// api/product?order=desc&sortBy=name&limit=10
 module.exports.getProducts = async (req, res) => {
-  const products = await Product.find({}, { photo: 0, _id: 0 }).populate(
-    'category',
-    'name createdAt -_id'
-  );
+  const order = req.query.order == 'asc' ? 1 : -1;
+  const sortBy = req.query.sortBy || 'name';
+  const limit = parseInt(req.query.limit) || 20;
+  const products = await Product.find({}, { photo: 0, description: 0 })
+    .populate('category', 'name createdAt -_id')
+    .sort({ [sortBy]: order })
+    .limit(limit);
   return res.status(200).send(products);
 };
 
-module.exports.getProductById = async (req, res) => {};
+module.exports.getProductById = async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId).populate(
+    'category',
+    'name -_id'
+  );
+  if (!product)
+    return res.status(400).send({ message: 'No product exists with this id' });
+};
 
-module.exports.updateProductById = async (req, res) => {};
+module.exports.getPhoto = async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId, { photo: 1, _id: 0 });
+  if (!product) return res.status(400).send({ message: 'No product found!' });
+  res.set('Content-Type', product.photo.contentType);
+
+  return res.status(200).send(product.photo.data);
+};
+
+module.exports.updateProductById = async (req, res) => {
+  const productId = req.params.id;
+  const product = await Product.findById(productId);
+  if (!product)
+    return res.status(400).send({ message: 'This product does not exist' });
+  const form = new formidable({ keepExtensions: true });
+  form.parse(req, (err, fields, files) => {
+    if (err) return res.status(400).send(defaultErrMsg(err));
+    const updatedProduct = _.pick(fields, [
+      'name',
+      'price',
+      'category',
+      'quantity',
+      'description',
+    ]);
+    _.assignIn(product, updatedProduct);
+    if (files.photo) {
+      fs.readFile(files.photo.path, (err, data) => {
+        const newPhoto = {
+          data: data,
+          contentType: files.photo.type,
+        };
+        product.photo = newPhoto;
+        product.save((err, result) => {
+          if (err) return res.status(500).send(defaultErrMsg(err));
+          else
+            return res
+              .status(200)
+              .send({ message: 'Successfully updated product!' });
+        });
+      });
+    } else {
+      product.save((err, result) => {
+        if (err) return res.status(500).send(defaultErrMsg(err));
+        else
+          return res
+            .status(200)
+            .send({ message: 'Successfully updated product!' });
+      });
+    }
+  });
+};
+
+module.exports.filterProducts = async (req, res) => {
+  const order = req.body.order == 'asc' ? 1 : -1;
+  const sortBy = req.body.sortBy || 'name';
+  const limit = parseInt(req.body.limit) || 20;
+  const skip = parseInt(req.body.skip) || 0;
+  const filter = req.body.filter;
+
+  const args = {};
+  if (filter) {
+    for (const key in filter) {
+      if (filter[key].length > 0) {
+        if (key === 'price') {
+          args[key] = {
+            $gte: parseInt(filter[key][0]),
+            $lte: parseInt(filter[key][1]),
+          };
+        }
+        if (key === 'category') {
+          args[key] = { $in: filter[key] };
+        }
+      }
+    }
+  }
+
+  const products = await Product.find(args)
+    .select({ photo: 0 })
+    .populate('category', 'name')
+    .sort({ [sortBy]: order })
+    .skip(skip)
+    .limit(limit);
+  return res.status(200).send(products);
+};
