@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-module.exports.Profile = module(
+module.exports.Profile = model(
   'Profile',
   Schema({
     user: {

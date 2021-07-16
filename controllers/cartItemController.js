@@ -2,18 +2,18 @@ const _ = require('lodash');
 const { CartItem, CartItemSchema } = require('../models/cartItem');
 
 module.exports.createCartItem = async (req, res) => {
-  const { price, productId, count } = _.pick(req.body, [
+  const { price, product, count } = _.pick(req.body, [
     'price',
-    'productId',
+    'product',
     'count',
   ]);
   const item = await CartItem.findOne({
     user: req.user._id,
-    product: productId,
+    product: product,
   });
   if (item) return res.status(400).send({ message: 'Product already exists!' });
   const cartItem = new CartItem({
-    product: productId,
+    product: product,
     user: req.user._id,
     price: price,
     count: count,
@@ -41,4 +41,5 @@ module.exports.updateCartItem = async (req, res) => {
 module.exports.deleteCartItem = async (req, res) => {
   const _id = req.params.id;
   await CartItem.deleteOne({ _id: _id, user: req.user._id });
+  return res.status(200).send({message: 'Successfully deleted cart item'});
 };

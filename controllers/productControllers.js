@@ -2,6 +2,7 @@ const _ = require('lodash');
 const { Product, validate } = require('../models/product');
 const formidable = require('formidable');
 const fs = require('fs');
+const { CLIENT_RENEG_LIMIT } = require('tls');
 
 const defaultErrMsg = (err) => ({
   message: err.messsage || 'Something went wrong!',
@@ -65,12 +66,13 @@ module.exports.getProducts = async (req, res) => {
 
 module.exports.getProductById = async (req, res) => {
   const productId = req.params.id;
-  const product = await Product.findById(productId).populate(
+  const product = await Product.findById(productId, { photo: 0 }).populate(
     'category',
     'name -_id'
   );
   if (!product)
     return res.status(400).send({ message: 'No product exists with this id' });
+  return res.status(200).send(product);
 };
 
 module.exports.getPhoto = async (req, res) => {
@@ -130,25 +132,24 @@ module.exports.filterProducts = async (req, res) => {
   const sortBy = req.body.sortBy || 'name';
   const limit = parseInt(req.body.limit) || 20;
   const skip = parseInt(req.body.skip) || 0;
-  const filter = req.body.filter;
+  const filters = req.body.filters;
 
   const args = {};
-  if (filter) {
-    for (const key in filter) {
-      if (filter[key].length > 0) {
+  if (filters) {
+    for (const key in filters) {
+      if (filters[key].length > 0) {
         if (key === 'price') {
           args[key] = {
-            $gte: parseInt(filter[key][0]),
-            $lte: parseInt(filter[key][1]),
+            $gte: parseInt(filters[key][0]),
+            $lte: parseInt(filters[key][1]),
           };
         }
         if (key === 'category') {
-          args[key] = { $in: filter[key] };
+          args[key] = { $in: filters[key] };
         }
       }
     }
   }
-
   const products = await Product.find(args)
     .select({ photo: 0 })
     .populate('category', 'name')
