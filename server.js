@@ -8,7 +8,7 @@ const dbAddress = process.env.MONGODB_URL.toString().replace(
 );
 
 mongoose
-  .connect(process.env.MONGODB_URL_LOCAL, {
+  .connect(dbAddress, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
