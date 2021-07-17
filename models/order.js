@@ -4,7 +4,7 @@ const { CartItemSchema } = require('./cartItem');
 const orderSchema = Schema(
   {
     cartItems: [CartItemSchema],
-    transactionId: {
+    transaction_id: {
       type: String,
       unique: true,
     },
