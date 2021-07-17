@@ -5,8 +5,8 @@ const { Profile } = require('../models/profile');
 
 module.exports.ipn = async (req, res) => {
   console.log(req.body);
-  return res.status(200).send('haha')
-}
+  return res.status(200).send('haha');
+};
 module.exports.initPayment = async (req, res) => {
   const userId = req.user._id;
   const cartItems = await CartItem.find({ user: userId });
@@ -24,12 +24,15 @@ module.exports.initPayment = async (req, res) => {
   const storeId = process.env.STORE_ID;
   const storePassword = process.env.STORE_PASSWORD;
   const payment = new PaymentSession(true, storeId, storePassword);
+
+  const backendURL =
+    process.env.HEROKU_URL || 'https://guarded-lake-12126.herokuapp.com';
   // Set the urls
   payment.setUrls({
     success: 'blabla.com', // If payment Succeed
     fail: 'yoursite.com/fail', // If payment failed
     cancel: 'yoursite.com/cancel', // If user cancel payment
-    ipn: 'yoursite.com/ipn', // SSLCommerz will send http post request in this link
+    ipn: `${backendURL}/api/payment/ipn`, // SSLCommerz will send http post request in this link
   });
 
   const tran_id =
