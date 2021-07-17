@@ -3,6 +3,10 @@ const { PaymentSession } = require('ssl-commerz-node');
 const { CartItem } = require('../models/cartItem');
 const { Profile } = require('../models/profile');
 
+module.exports.ipn = async (req, res) => {
+  console.log(req.body);
+  return res.status(200).send('haha')
+}
 module.exports.initPayment = async (req, res) => {
   const userId = req.user._id;
   const cartItems = await CartItem.find({ user: userId });
@@ -22,7 +26,7 @@ module.exports.initPayment = async (req, res) => {
   const payment = new PaymentSession(true, storeId, storePassword);
   // Set the urls
   payment.setUrls({
-    success: 'yoursite.com/success', // If payment Succeed
+    success: 'blabla.com', // If payment Succeed
     fail: 'yoursite.com/fail', // If payment failed
     cancel: 'yoursite.com/cancel', // If user cancel payment
     ipn: 'yoursite.com/ipn', // SSLCommerz will send http post request in this link
