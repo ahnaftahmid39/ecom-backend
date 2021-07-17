@@ -1,4 +1,6 @@
-global.baseDir = __dirname;
+global.__baseDir = __dirname;
+
+console.log(__baseDir);
 
 require('dotenv/config');
 const app = require('./app');
