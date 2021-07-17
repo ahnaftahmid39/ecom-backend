@@ -1,5 +1,6 @@
 const { response } = require('express');
 const { PaymentSession } = require('ssl-commerz-node');
+const path = require('path');
 const { CartItem } = require('../models/cartItem');
 const { Order } = require('../models/order');
 const { Payment } = require('../models/payment');
@@ -43,7 +44,7 @@ module.exports.initPayment = async (req, res) => {
     process.env.HEROKU_URL || 'https://guarded-lake-12126.herokuapp.com';
   // Set the urls
   payment.setUrls({
-    success: 'blabla.com', // If payment Succeed
+    success: `${backendURL}/api/payment/success`, // If payment Succeed
     fail: 'yoursite.com/fail', // If payment failed
     cancel: 'yoursite.com/cancel', // If user cancel payment
     ipn: `${backendURL}/api/payment/ipn`, // SSLCommerz will send http post request in this link
@@ -105,4 +106,8 @@ module.exports.initPayment = async (req, res) => {
     await order.save();
   }
   return res.status(200).send(response);
+};
+
+module.exports.paymentSuccess = async (req, res) => {
+  res.sendFile(path.join(__baseDir + 'public/success.html'));
 };
