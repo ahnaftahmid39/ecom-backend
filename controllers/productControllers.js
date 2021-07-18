@@ -129,7 +129,7 @@ module.exports.updateProductById = async (req, res) => {
 
 module.exports.filterProducts = async (req, res) => {
   const order = req.body.order == 'asc' ? 1 : -1;
-  const sortBy = req.body.sortBy || 'name';
+  let sortBy = req.body.sortBy || 'name';
   const limit = parseInt(req.body.limit) || 20;
   const skip = parseInt(req.body.skip) || 0;
   const filters = req.body.filters;
@@ -150,6 +150,11 @@ module.exports.filterProducts = async (req, res) => {
       }
     }
   }
+
+  if (sortBy == 'arrival') {
+    sortBy = 'createdAt';
+  }
+
   const products = await Product.find(args)
     .select({ photo: 0 })
     .populate('category', 'name')

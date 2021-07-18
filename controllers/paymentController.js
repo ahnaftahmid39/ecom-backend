@@ -5,6 +5,7 @@ const { CartItem } = require('../models/cartItem');
 const { Order } = require('../models/order');
 const { Payment } = require('../models/payment');
 const { Profile } = require('../models/profile');
+const { Product } = require('../models/product');
 
 module.exports.ipn = async (req, res) => {
   const payment = new Payment(req.body);
@@ -14,6 +15,12 @@ module.exports.ipn = async (req, res) => {
       { transaction_id: tran_id },
       { status: 'Complete' }
     );
+    for (const cartItem of order.cartItems) {
+      await Product.updateOne(
+        { _id: cartItem.product },
+        { $inc: { sold: cartItem.count } }
+      );
+    }
     await CartItem.deleteMany(order.cartItems);
   } else {
     await Order.deleteOne({ transaction_id: tran_id });

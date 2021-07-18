@@ -18,6 +18,7 @@ module.exports.Product = model(
         data: Buffer,
         contentType: String,
       },
+      sold: Number,
     },
     { timestamps: true }
   )
