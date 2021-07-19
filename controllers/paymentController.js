@@ -24,7 +24,7 @@ module.exports.ipn = async (req, res) => {
     formData.append('val_id', val_id);
 
     const response = await fetch(
-      'sslcommerz.com/validator/api/validationserverAPI.php',
+      'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php',
       {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, cors, *same-origin
