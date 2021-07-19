@@ -39,14 +39,17 @@ module.exports.initPayment = async (req, res) => {
 
   const { address1, address2, city, state, postcode, country, phone } = profile;
 
-  const total = cartItems.reduce((a, b) => {
-    return {
-      count: a.count + b.count,
-      price:
-        a.count * a.price * (a.discount ? 1 - a.discount / 100 : 1) +
-        b.count * b.price * (b.discount ? 1 - b.discount / 100 : 1),
-    };
-  });
+  const total = cartItems.reduce(
+    (a, b) => {
+      return {
+        count: a.count + b.count,
+        price:
+          a.count * a.price * (a.discount ? 1 - a.discount / 100 : 1) +
+          b.count * b.price * (b.discount ? 1 - b.discount / 100 : 1),
+      };
+    },
+    { count: 0, price: 0, discount: 0 }
+  );
 
   console.log(total);
 
