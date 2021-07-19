@@ -174,12 +174,11 @@ module.exports.addReviewToProduct = async (req, res) => {
     user: req.user._id,
     ...req.body,
   };
-  const updatedProduct = await Product.findByIdAndUpdate(
-    productId,
-    { $push: { reviews: newReview } },
-    { new: true }
+  await Product.updateOne(
+    { _id: productId },
+    { $push: { reviews: newReview } }
   );
-  return res.status(200).send(updatedProduct);
+  return res.status(200).send({ message: 'Successfully updated review!' });
 };
 
 module.exports.getReviewsForProduct = async (req, res) => {
