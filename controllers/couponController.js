@@ -18,5 +18,6 @@ module.exports.createCoupon = async (req, res) => {
 module.exports.validateCoupon = async (req, res) => {
   const code = req.body.code;
   const coupon = await Coupon.findOne({ code: code });
-  return res.status(200).send(coupon);
+  if (coupon) return res.status(200).send(coupon);
+  else return res.status(400).send({ message: 'Coupon not valid!' });
 };
