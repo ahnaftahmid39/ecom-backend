@@ -12,7 +12,7 @@ module.exports.createCoupon = async (req, res) => {
   const result = coupon.save();
   return res
     .status(201)
-    .send({ data: result, message: 'Created a coupon successfully' });
+    .send({ data: coupon, message: 'Created a coupon successfully' });
 };
 
 module.exports.validateCoupon = async (req, res) => {
