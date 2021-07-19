@@ -10,7 +10,8 @@ const orderSchema = Schema(
       unique: true,
     },
     paymentStatus: {
-      type: string,
+      type: String,
+      default: 'NOT VALIDATED YET'
     },
     address: {
       phone: String,
