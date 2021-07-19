@@ -24,7 +24,7 @@ router.route('/photo/:id').get(getPhoto);
 router.route('/filter').post(filterProducts);
 
 router
-  .router('/reviews/:id')
+  .route('/reviews/:id')
   .get(getReviewsForProduct)
   .post(authorize, addReviewToProduct);
 
