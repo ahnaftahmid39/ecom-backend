@@ -35,6 +35,7 @@ module.exports.ipn = async (req, res) => {
         body: formData, // body data type must match "Content-Type" header
       }
     );
+    console.log(response);
     const data = await response.json();
     console.log(data);
 
