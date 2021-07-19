@@ -182,8 +182,8 @@ module.exports.addReviewToProduct = async (req, res) => {
 };
 
 module.exports.getReviewsForProduct = async (req, res) => {
-  const { reviews } = await Product.findById(req.params.id).select(
-    'reviews -_id'
-  );
+  const { reviews } = await Product.findById(req.params.id)
+    .select('reviews -_id')
+    .populate('reviews.user', 'name');
   return res.status(200).send(reviews);
 };
