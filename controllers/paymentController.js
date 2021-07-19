@@ -6,6 +6,7 @@ const { Order } = require('../models/order');
 const { Payment } = require('../models/payment');
 const { Profile } = require('../models/profile');
 const { Product } = require('../models/product');
+const { ObjectId } = require('mongoose').Types;
 
 module.exports.ipn = async (req, res) => {
   const payment = new Payment(req.body);
@@ -15,14 +16,15 @@ module.exports.ipn = async (req, res) => {
       { transaction_id: tran_id },
       { status: 'Complete' }
     );
-    console.log(order);
+    const cartItemIds = [];
     for (const cartItem of order.cartItems) {
+      cartItemIds.push(new ObjectId(cartItem._id));
       await Product.updateOne(
         { _id: cartItem.product },
         { $inc: { sold: cartItem.count } }
       );
     }
-    await CartItem.deleteMany(order.cartItems);
+    await CartItem.deleteMany({ _id: { $in: cartItemIds } });
   } else {
     await Order.deleteOne({ transaction_id: tran_id });
   }
