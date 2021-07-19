@@ -168,7 +168,7 @@ module.exports.filterProducts = async (req, res) => {
   return res.status(200).send(products);
 };
 
-export const addReviewToProduct = async (req, res) => {
+module.exports.addReviewToProduct = async (req, res) => {
   const productId = req.params.id;
   const newReview = {
     user: req.user._id,
@@ -182,7 +182,7 @@ export const addReviewToProduct = async (req, res) => {
   return res.status(200).send(updatedProduct);
 };
 
-export const getReviewsForProduct = async (req, res) => {
+module.exports.getReviewsForProduct = async (req, res) => {
   const { reviews } = await Product.findById(req.params.id).select(
     'reviews -_id'
   );
