@@ -15,7 +15,7 @@ module.exports.ipn = async (req, res) => {
       { transaction_id: tran_id },
       { status: 'Complete' }
     );
-    console.log(order.cartItems);
+    console.log(order);
     for (const cartItem of order.cartItems) {
       await Product.updateOne(
         { _id: cartItem.product },
