@@ -43,13 +43,12 @@ module.exports.initPayment = async (req, res) => {
     return {
       count: a.count + b.count,
       price:
-        a.count * a.price * a.discount
-          ? 1 - a.discount / 100
-          : 1 + b.count * b.price * b.discount
-          ? 1 - b.discount / 100
-          : 1,
+        a.count * a.price * (a.discount ? 1 - a.discount / 100 : 1) +
+        b.count * b.price * (b.discount ? 1 - b.discount / 100 : 1),
     };
   });
+
+  console.log(total);
 
   const storeId = process.env.STORE_ID;
   const storePassword = process.env.STORE_PASSWORD;
