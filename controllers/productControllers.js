@@ -130,9 +130,10 @@ module.exports.updateProductById = async (req, res) => {
 module.exports.filterProducts = async (req, res) => {
   const order = req.body.order == 'asc' ? 1 : -1;
   let sortBy = req.body.sortBy || 'name';
-  const limit = parseInt(req.body.limit) || 20;
+  const limit = parseInt(req.body.limit) || 100;
   const skip = parseInt(req.body.skip) || 0;
   const filters = req.body.filters;
+  const searchName = req.body.searchName;
 
   const args = {};
   if (filters) {
@@ -154,7 +155,8 @@ module.exports.filterProducts = async (req, res) => {
   if (sortBy == 'arrival') {
     sortBy = 'createdAt';
   }
-
+  if (searchName) args['name'] = searchName;
+  
   const products = await Product.find(args)
     .select({ photo: 0 })
     .populate('category', 'name')
