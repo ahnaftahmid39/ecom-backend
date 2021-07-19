@@ -34,23 +34,24 @@ module.exports.ipn = async (req, res) => {
         referrer: 'no-referrer', // no-referrer, *client
       }
     );
-    console.log(response);
     const data = await response.json();
-    console.log(data);
-
-    const order = await Order.findOneAndUpdate(
-      { transaction_id: tran_id },
-      { status: 'Complete' }
-    );
-    const cartItemIds = [];
-    for (const cartItem of order.cartItems) {
-      cartItemIds.push(new ObjectId(cartItem._id));
-      await Product.updateOne(
-        { _id: cartItem.product },
-        { $inc: { sold: cartItem.count, quantity: -cartItem.count } }
+    if (data.status === 'VALID') {
+      const order = await Order.findOneAndUpdate(
+        { transaction_id: tran_id },
+        { status: 'Complete', paymentStatus: data.status }
       );
+      const cartItemIds = [];
+      for (const cartItem of order.cartItems) {
+        cartItemIds.push(new ObjectId(cartItem._id));
+        await Product.updateOne(
+          { _id: cartItem.product },
+          { $inc: { sold: cartItem.count, quantity: -cartItem.count } }
+        );
+      }
+      await CartItem.deleteMany({ _id: { $in: cartItemIds } });
+    } else {
+      await Order.deleteOne({ transaction_id: tran_id });
     }
-    await CartItem.deleteMany({ _id: { $in: cartItemIds } });
   } else {
     await Order.deleteOne({ transaction_id: tran_id });
   }
@@ -153,4 +154,12 @@ module.exports.initPayment = async (req, res) => {
 
 module.exports.paymentSuccess = async (req, res) => {
   res.sendFile(path.join(__baseDir + '/public/success.html'));
+};
+
+module.exports.paymentFailure = async (req, res) => {
+  res.sendFile(path.join(__baseDir + '/public/failure.html'));
+};
+
+module.exports.paymentCancel = async (req, res) => {
+  res.sendFile(path.join(__baseDir + '/public/cancel.html'));
 };

@@ -1,3 +1,4 @@
+const { string } = require('joi');
 const { Schema, model } = require('mongoose');
 const { CartItemSchema } = require('./cartItem');
 
@@ -7,6 +8,10 @@ const orderSchema = Schema(
     transaction_id: {
       type: String,
       unique: true,
+    },
+    paymentStatus: {
+      type: string,
+      default: 'NOT VALIDATED YET',
     },
     address: {
       phone: String,
