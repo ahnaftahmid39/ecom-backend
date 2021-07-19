@@ -1,4 +1,3 @@
-const { response } = require('express');
 const { PaymentSession } = require('ssl-commerz-node');
 const path = require('path');
 const { CartItem } = require('../models/cartItem');
@@ -7,11 +6,38 @@ const { Payment } = require('../models/payment');
 const { Profile } = require('../models/profile');
 const { Product } = require('../models/product');
 const { ObjectId } = require('mongoose').Types;
+const FormData = require('form-data');
+const fetch = require('node-fetch');
 
 module.exports.ipn = async (req, res) => {
   const payment = new Payment(req.body);
   const tran_id = payment['tran_id'];
+
   if (payment['status'] === 'VALID') {
+    const storeId = process.env.STORE_ID;
+    const storePassword = process.env.STORE_PASSWORD;
+    const val_id = payment['val_id'];
+
+    const formData = new FormData();
+    formData.append('store_id', storeId);
+    formData.append('store_passwd', storePassword);
+    formData.append('val_id', val_id);
+
+    const response = await fetch(
+      'sslcommerz.com/validator/api/validationserverAPI.php',
+      {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, cors, *same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        redirect: 'follow', // manual, *follow, error
+        referrer: 'no-referrer', // no-referrer, *client
+        body: formData, // body data type must match "Content-Type" header
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+
     const order = await Order.findOneAndUpdate(
       { transaction_id: tran_id },
       { status: 'Complete' }
