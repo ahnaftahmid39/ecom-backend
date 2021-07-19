@@ -38,8 +38,14 @@ module.exports.updateCartItem = async (req, res) => {
   return res.status(200).send({ message: 'Successfully updated cart item' });
 };
 
+module.exports.updateCartDiscount = async (req, res) => {
+  const { discount } = req.body;
+  await CartItem.updateMany({ user: req.user._id }, { discount: discount });
+  return res.status(200).send({ message: 'Successfully updated discount!' });
+};
+
 module.exports.deleteCartItem = async (req, res) => {
   const _id = req.params.id;
   await CartItem.deleteOne({ _id: _id, user: req.user._id });
-  return res.status(200).send({message: 'Successfully deleted cart item'});
+  return res.status(200).send({ message: 'Successfully deleted cart item' });
 };

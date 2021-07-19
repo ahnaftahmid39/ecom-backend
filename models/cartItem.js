@@ -10,6 +10,7 @@ const CartItemSchema = Schema(
     price: {
       type: Number,
     },
+    discount: Number,
     count: {
       type: Number,
       default: 1,
