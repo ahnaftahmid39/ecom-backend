@@ -24,15 +24,14 @@ module.exports.ipn = async (req, res) => {
     formData.append('val_id', val_id);
 
     const response = await fetch(
-      'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php',
+      `https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=${val_id}&store_id=${storeId}&store_passwd=${storePassword}&format=json`,
       {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, cors, *same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
         credentials: 'same-origin', // include, *same-origin, omit
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
-        body: formData, // body data type must match "Content-Type" header
       }
     );
     console.log(response);
