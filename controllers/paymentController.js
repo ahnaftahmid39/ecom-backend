@@ -21,7 +21,7 @@ module.exports.ipn = async (req, res) => {
       cartItemIds.push(new ObjectId(cartItem._id));
       await Product.updateOne(
         { _id: cartItem.product },
-        { $inc: { sold: cartItem.count } }
+        { $inc: { sold: cartItem.count, quantity: -cartItem.count } }
       );
     }
     await CartItem.deleteMany({ _id: { $in: cartItemIds } });
