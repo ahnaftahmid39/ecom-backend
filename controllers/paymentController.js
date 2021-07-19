@@ -42,7 +42,12 @@ module.exports.initPayment = async (req, res) => {
   const total = cartItems.reduce((a, b) => {
     return {
       count: a.count + b.count,
-      price: a.count * a.price + b.count * b.price,
+      price:
+        a.count * a.price * a.discount
+          ? 1 - a.discount / 100
+          : 1 + b.count * b.price * b.discount
+          ? 1 - b.discount / 100
+          : 1,
     };
   });
 
