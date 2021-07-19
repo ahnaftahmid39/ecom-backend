@@ -1,6 +1,22 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 
+const reviewSchema = Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+  },
+  comment: {
+    type: String,
+  },
+});
+
 module.exports.Product = model(
   'Product',
   Schema(
@@ -22,6 +38,13 @@ module.exports.Product = model(
         type: Number,
         default: 0,
       },
+      // avgRating: {
+      //   type: Number,
+      //   default: 0,
+      //   min: 0,
+      //   max: 5,
+      // },
+      reviews: [reviewSchema],
     },
     { timestamps: true }
   )

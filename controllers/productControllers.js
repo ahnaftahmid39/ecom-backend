@@ -57,7 +57,10 @@ module.exports.getProducts = async (req, res) => {
   const order = req.query.order == 'asc' ? 1 : -1;
   const sortBy = req.query.sortBy || 'name';
   const limit = parseInt(req.query.limit) || 20;
-  const products = await Product.find({}, { photo: 0, description: 0 })
+  const products = await Product.find(
+    {},
+    { photo: 0, description: 0, reviews: 0 }
+  )
     .populate('category', 'name createdAt -_id')
     .sort({ [sortBy]: order })
     .limit(limit);
@@ -66,10 +69,9 @@ module.exports.getProducts = async (req, res) => {
 
 module.exports.getProductById = async (req, res) => {
   const productId = req.params.id;
-  const product = await Product.findById(productId, { photo: 0 }).populate(
-    'category',
-    'name -_id'
-  );
+  const product = await Product.findById(productId, { photo: 0 })
+    .populate('category', 'name -_id')
+    .populate('reviews.user', 'name');
   if (!product)
     return res.status(400).send({ message: 'No product exists with this id' });
   return res.status(200).send(product);
@@ -156,7 +158,7 @@ module.exports.filterProducts = async (req, res) => {
     sortBy = 'createdAt';
   }
   if (searchName) args['name'] = searchName;
-  
+
   const products = await Product.find(args)
     .select({ photo: 0 })
     .populate('category', 'name')
@@ -164,4 +166,25 @@ module.exports.filterProducts = async (req, res) => {
     .skip(skip)
     .limit(limit);
   return res.status(200).send(products);
+};
+
+export const addReviewToProduct = async (req, res) => {
+  const productId = req.params.id;
+  const newReview = {
+    user: req.user._id,
+    ...req.body,
+  };
+  const updatedProduct = await Product.findByIdAndUpdate(
+    productId,
+    { $push: { reviews: newReview } },
+    { new: true }
+  );
+  return res.status(200).send(updatedProduct);
+};
+
+export const getReviewsForProduct = async (req, res) => {
+  const { reviews } = await Product.findById(req.params.id).select(
+    'reviews -_id'
+  );
+  return res.status(200).send(reviews);
 };

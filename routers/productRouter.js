@@ -6,6 +6,8 @@ const {
   updateProductById,
   getPhoto,
   filterProducts,
+  getReviewsForProduct,
+  addReviewToProduct,
 } = require('../controllers/productControllers');
 const admin = require('../middlewares/admin');
 const authorize = require('../middlewares/authorize');
@@ -20,5 +22,10 @@ router
 router.route('/photo/:id').get(getPhoto);
 
 router.route('/filter').post(filterProducts);
+
+router
+  .router('/reviews/:id')
+  .get(getReviewsForProduct)
+  .post(authorize, addReviewToProduct);
 
 module.exports = router;
