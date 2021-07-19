@@ -11,7 +11,6 @@ const orderSchema = Schema(
     },
     paymentStatus: {
       type: string,
-      default: 'NOT VALIDATED YET',
     },
     address: {
       phone: String,
