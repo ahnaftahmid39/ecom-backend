@@ -5,6 +5,7 @@ const {
   deleteCartItem,
   getCartItem,
   updateCartItem,
+  updateCartDiscount,
 } = require('../controllers/cartItemController');
 
 const authorize = require('../middlewares/authorize');
@@ -16,5 +17,7 @@ router
   .put(authorize, updateCartItem);
 
 router.route('/:id').delete(authorize, deleteCartItem);
+
+router.route('/discount').post(authorize, updateCartDiscount);
 
 module.exports = router;
