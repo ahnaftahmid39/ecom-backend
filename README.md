@@ -1,3 +1,2 @@
-# shopping-cart
-A JavaScript learning project where products can be added on shopping cart. link: https://ahnaftahmid31.github.io/Shopping-Cart/
-(btw title is misleading I know)
+This is the final project and solution to e-commerce project in career track bohubrihi.
+Please don't copy this project, it was done in a matter of a day. So there are lot of bugs and unhandled error in this project.
