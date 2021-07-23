@@ -6,8 +6,8 @@ const _ = require('lodash');
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.HEROKU_URL.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.HEROKU_URL.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: `${process.env.HEROKU_URL}/auth/google/redirect`,
     },
     async function (accessToken, refreshToken, profile, cb) {
