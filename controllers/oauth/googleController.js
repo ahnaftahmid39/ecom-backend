@@ -18,7 +18,7 @@ passport.use(
       try {
         if (user) {
           res.user = _.pick(user, ['email', '_id']);
-          res.token = user.getJWT();
+          res.token = user.generateJWT();
         } else {
           const newUser = new User({
             email: profile._json.email,
@@ -27,7 +27,7 @@ passport.use(
           });
           await newUser.save();
           res.user = _.pick(newUser, ['email', '_id']);
-          res.token = newUser.getJWT();
+          res.token = newUser.generateJWT();
         }
         return cb(null, res);
       } catch (err) {
