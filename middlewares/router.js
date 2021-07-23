@@ -5,9 +5,10 @@ const cartRouter = require('../routers/cartRouter');
 const profileRouter = require('../routers/profileRouter');
 const paymentRouter = require('../routers/paymentRouter');
 const couponRouter = require('../routers/couponRouter');
+const googleRotuer = require('../routers/oauth/googleRouter');
 
 module.exports = (app) => {
-  app.use('/auth/google', )
+  app.use('/auth/google', googleRouter);
   app.use('/api/user', userRouter);
   app.use('/api/category', categoryRouter);
   app.use('/api/product', productRouter);
