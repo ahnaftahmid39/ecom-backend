@@ -50,5 +50,5 @@ passport.use(
 );
 
 module.exports.redirect = (req, res) => {
-  return res.status(200).send(req.user);
+  res.redirect(`http://localhost:3000/loginsocial?token=${req.user.token}`);
 };
