@@ -16,20 +16,24 @@ passport.use(
         googleId: profile.id,
       });
       let res = {};
-      if (user) {
-        res.user = _.pick(user, ['email', '_id']);
-        res.token = user.getJWT();
-      } else {
-        const newUser = new User({
-          email: profile._json.email,
-          googleId: profile.id,
-          name: profile.displayName,
-        });
-        await newUser.save();
-        res.user = _.pick(newUser, ['email', '_id']);
-        res.token = newUser.getJWT();
+      try {
+        if (user) {
+          res.user = _.pick(user, ['email', '_id']);
+          res.token = user.getJWT();
+        } else {
+          const newUser = new User({
+            email: profile._json.email,
+            googleId: profile.id,
+            name: profile.displayName,
+          });
+          await newUser.save();
+          res.user = _.pick(newUser, ['email', '_id']);
+          res.token = newUser.getJWT();
+        }
+        return cb(null, res);
+      } catch (err) {
+        return cb(err.message, null);
       }
-      return cb(null, res);
     }
   )
 );
