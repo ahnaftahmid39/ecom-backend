@@ -3,9 +3,7 @@ const { redirect } = require('../../controllers/oauth/facebookController');
 
 const router = require('express').Router();
 
-router
-  .route('/')
-  .get(passport.authenticate('facebook'));
+router.route('/').get(passport.authenticate('facebook', { scope: ['email'] }));
 
 router
   .route('/redirect')

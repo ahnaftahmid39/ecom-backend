@@ -9,14 +9,25 @@ passport.use(
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
       callbackURL: `${process.env.HEROKU_URL}/auth/facebook/redirect`,
+      profileFields: [
+        'id',
+        'email',
+        'gender',
+        'link',
+        'locale',
+        'name',
+        'timezone',
+        'updated_time',
+        'verified',
+      ],
     },
     async function (accessToken, refreshToken, profile, cb) {
       console.log(profile);
-      const user = await User.findOne({
-        email: profile._json.email,
-      });
-      let res = {};
       try {
+        const user = await User.findOne({
+          email: profile._json.email,
+        });
+        let res = {};
         if (user) {
           res.user = _.pick(user, ['email', '_id']);
           res.token = user.generateJWT();
