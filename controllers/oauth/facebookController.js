@@ -34,7 +34,7 @@ passport.use(
         } else {
           const newUser = new User({
             email: profile._json.email,
-            googleId: profile.id,
+            facebookId: profile.id,
             name: profile.displayName,
           });
           await newUser.save();
