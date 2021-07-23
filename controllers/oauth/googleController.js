@@ -13,7 +13,6 @@ passport.use(
     async function (accessToken, refreshToken, profile, cb) {
       const user = await User.findOne({
         email: profile._json.email,
-        googleId: profile.id,
       });
       let res = {};
       try {
@@ -32,7 +31,7 @@ passport.use(
         }
         return cb(null, res);
       } catch (err) {
-        return cb(err.message, null);
+        return cb(err, null);
       }
     }
   )
