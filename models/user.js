@@ -18,7 +18,7 @@ const userSchema = Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
         minlength: 5,
         maxlength: 1024,
     },
@@ -26,7 +26,10 @@ const userSchema = Schema({
         type: String,
         enum: ['user', 'admin'],
         default: 'user',
-    }
+    },
+    googleId: {
+        type: String,
+    },
 }, { timestamps: true });
 
 userSchema.methods.generateJWT = function () {

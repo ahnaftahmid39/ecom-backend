@@ -7,6 +7,7 @@ const paymentRouter = require('../routers/paymentRouter');
 const couponRouter = require('../routers/couponRouter');
 
 module.exports = (app) => {
+  app.use('/auth/google', )
   app.use('/api/user', userRouter);
   app.use('/api/category', categoryRouter);
   app.use('/api/product', productRouter);
