@@ -1,6 +1,7 @@
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const _ = require('lodash');
+const { User } = require('../../models/user');
 
 passport.use(
   new FacebookStrategy(
@@ -10,6 +11,7 @@ passport.use(
       callbackURL: `${process.env.HEROKU_URL}/auth/facebook/redirect`,
     },
     async function (accessToken, refreshToken, profile, cb) {
+      console.log(profile);
       const user = await User.findOne({
         email: profile._json.email,
       });
