@@ -11,6 +11,8 @@ const facebookRouter = require('../routers/oauth/facebookRouter');
 module.exports = (app) => {
   app.use('/auth/google', googleRouter);
   app.use('/auth/facebook', facebookRouter);
+  app.use('/api/oauth/google', googleRouter);
+  app.use('/api/oauth/facebook', facebookRouter);
   app.use('/api/user', userRouter);
   app.use('/api/category', categoryRouter);
   app.use('/api/product', productRouter);

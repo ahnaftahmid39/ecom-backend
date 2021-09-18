@@ -142,9 +142,9 @@ module.exports.filterProducts = async (req, res) => {
     for (const key in filters) {
       if (filters[key].length > 0) {
         if (key === 'price') {
-          args[key] = {
-            $gte: parseInt(filters[key][0]),
-            $lte: parseInt(filters[key][1]),
+          args['price'] = {
+            $gte: parseInt(filters['price'][0]),
+            $lte: parseInt(filters['price'][1]),
           };
         }
         if (key === 'category') {
@@ -159,12 +159,17 @@ module.exports.filterProducts = async (req, res) => {
   }
   if (searchName) args['name'] = searchName;
 
+try {
   const products = await Product.find(args)
     .select({ photo: 0 })
     .populate('category', 'name')
     .sort({ [sortBy]: order })
     .skip(skip)
     .limit(limit);
+} catch (error) {
+  console.log(error.message);
+}
+
   return res.status(200).send(products);
 };
 
