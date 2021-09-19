@@ -1,4 +1,44 @@
-This is the backend for e-commerce project showed in fsmern course bohubrihi.
+Table of Contents
+=================
+* [Introduction](#introduction)
+* [Available API endpoint list](#available-api-endpoint-list)
+* [Authentication](#authentication)
+   * [OAuth](#oauth)
+   * [Normal](#normal)
+      * [Sign up](#sign-up)
+      * [Sign in](#sign-in)
+* [Purchase history of an user](#purchase-history-of-an-user)
+* [Category of products](#category-of-products)
+   * [Creating new category](#creating-new-category)
+   * [Getting all the categories](#getting-all-the-categories)
+* [Products](#products)
+   * [Creating/Adding new product](#creatingadding-new-product)
+   * [Getting the products](#getting-the-products)
+   * [Getting a certain product](#getting-a-certain-product)
+   * [Editing a certain product](#editing-a-certain-product)
+   * [Getting the photo of a certain product](#getting-the-photo-of-a-certain-product)
+   * [Filtering the products](#filtering-the-products)
+   * [Adding review to a certain product](#adding-review-to-a-certain-product)
+   * [Getting all the reviews of a certain product](#getting-all-the-reviews-of-a-certain-product)
+* [Cart](#cart)
+   * [Adding a product to cart](#adding-a-product-to-cart)
+   * [Getting all the cart items](#getting-all-the-cart-items)
+   * [Modifying count property of a cart item](#modifying-count-property-of-a-cart-item)
+   * [Delete a cart item](#delete-a-cart-item)
+   * [Adding discount to all cart items of a user](#adding-discount-to-all-cart-items-of-a-user)
+* [Profile](#profile)
+   * [Getting the profile for current user](#getting-the-profile-for-current-user)
+   * [Updating the profile for current user](#updating-the-profile-for-current-user)
+* [Payment](#payment)
+   * [Initializing a payment](#initializing-a-payment)
+* [Coupon](#coupon)
+   * [Creating a coupon](#creating-a-coupon)
+   * [Viewing the coupons](#viewing-the-coupons)
+   * [Validating a coupon](#validating-a-coupon)
+
+
+# Introduction
+This is the backend for e-commerce project showed in fsmern course bohubrihi. There are lots of unhandled errors. I am not currently intersted to continue this project. Feel free to fork and use.
 
 # Available API endpoint list:
 
@@ -115,10 +155,12 @@ For using OAuth simply redirect to the page
 /api/oauth/facebook
 ```
 
-After successful login, it will redirect to your frontend page with a token as query string. `<frontend page>/loginsocial?token=<token>`
+After successful login, it will redirect to your frontend page with a token as query string.
 example:
 
 ```
+format: <frontend page>.com/loginsocial?token=<token>
+
 http://localhost:3000/loginsocial?token=eyEfajkFDAjDFAFEFDSAF
 ```
 
@@ -164,8 +206,8 @@ _request body_:
 **_Response:_**
 
 ```json
+// message: "Login Successful" for signin
 {
-  // "Login Successful" for signin
   "message": "Registration Successful!",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTQ2NjY5ZTAyNTRmYTAwMTVhMGNhYzEiLCJlbWFpbCI6ImplcnJ5QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmFtZSI6IlRvbSBKZXJyeSIsImlhdCI6MTYzMjAwMzc0MiwiZXhwIjoxNjMyNjA4NTQyfQ.Dj70LNNYpdjDS7qfDVWdIoVRrV8WZjeX1sq5TK-SiIg",
   "user": {
