@@ -134,7 +134,7 @@ Request response was used for this.
 POST /api/user/signup
 ```
 
-request body (json data) :
+_request body_ (json data) :
 
 ```json
 {
@@ -152,7 +152,7 @@ request body (json data) :
 POST /api/user/signin
 ```
 
-request body:
+_request body_:
 
 ```json
 {
@@ -243,7 +243,7 @@ headers:
 Authorization : "Bearer <token>"
 ```
 
-request body:
+_request body_:
 
 ```json
 {
@@ -303,7 +303,7 @@ headers:
 Authorization: "Bearer <token>"
 ```
 
-request body example:
+_request body_ example:
 
 | Key         | Value                                         |
 | ----------- | --------------------------------------------- |
@@ -424,7 +424,7 @@ headers:
 Authorization: "Bearer <token>"
 ```
 
-request body example:
+_request body_ example:
 
 | Key         | Value                        |
 | ----------- | ---------------------------- |
@@ -473,7 +473,7 @@ No authorization needed.
 POST api/product/filter
 ```
 
-request body:
+_request body_:
 
 ```json
 {
@@ -532,6 +532,451 @@ All the products satisfying the filters will be sent
 
 ## Adding review to a certain product
 
-***Request:***
+**_Request:_**
 
-***Response:***
+```
+URI: https:<backend>.com/api/product/reviews/:product_id
+
+POST api/product/reviews/60f5f622029713001519748a
+
+headers:
+Authorization: Bearer <token>
+```
+
+_request body_:
+
+rating is between 1, 5
+
+```json
+{
+  "rating": "5",
+  "comment": "shundor"
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Successfully updated review!"
+}
+```
+
+## Getting all the reviews of a certain product
+
+**_Request:_**
+
+```
+GET api/product/reviews/60f5f622029713001519748a
+```
+
+**_Response:_**
+
+```json
+[
+  {
+    "_id": "614741bb59c36300166e991d",
+    "user": {
+      "_id": "60ef0176b8d3dc1cfa4d09b1",
+      "name": "Ahnaf Tahmid"
+    },
+    "rating": 5,
+    "comment": "shundor"
+  }
+]
+```
+
+# Cart
+
+## Adding a product to cart
+
+**_Request:_**
+
+```
+POST api/cart
+
+headers:
+Authorization: Bearer <token>
+```
+
+_request body:_
+
+```json
+//here product is the id of the product
+// price of a product can chnage over time so saving what price was at that time
+{
+  "price": "5",
+  "product": "6147150610d7d80016da7bed",
+  "count": "1"
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Created cart item successfully",
+  "data": {
+    "discount": 0,
+    "count": 1,
+    "_id": "614752534bc9ea001695101f",
+    "product": "6147150610d7d80016da7bed",
+    "user": "60ef0176b8d3dc1cfa4d09b1",
+    "price": 5,
+    "createdAt": "2021-09-19T15:08:03.093Z",
+    "updatedAt": "2021-09-19T15:08:03.093Z",
+    "__v": 0
+  }
+}
+```
+
+## Getting all the cart items
+
+**_Request:_**
+
+```
+GET api/cart
+
+headers:
+Authorization: Bearer <token>
+```
+
+**_Response:_**
+
+```json
+[
+  {
+    "discount": 0,
+    "count": 1,
+    "_id": "614752534bc9ea001695101f",
+    "product": {
+      "_id": "6147150610d7d80016da7bed",
+      "name": "Noodles"
+    },
+    "user": {
+      "_id": "60ef0176b8d3dc1cfa4d09b1",
+      "name": "Ahnaf Tahmid"
+    },
+    "price": 5,
+    "createdAt": "2021-09-19T15:08:03.093Z",
+    "updatedAt": "2021-09-19T15:08:03.093Z",
+    "__v": 0
+  }
+]
+```
+
+## Modifying `count` property of a cart item
+
+**_Request:_**
+
+```
+PUT api/cart
+
+Authorization Bearer <token>
+```
+
+_request body:_
+
+```json
+{
+  "_id": "614752534bc9ea001695101f",
+  "count": 1
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Successfully updated cart item"
+}
+```
+
+## Delete a cart item
+
+Users can delete only those items which they added.
+
+**_Request:_**
+
+```
+format: https://<backend>.com/api/cart/:id_of_cartitem
+
+DELETE api/cart/614752534bc9ea001695101f
+
+Authorization: Bearer <token>
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Successfully deleted cart item"
+}
+```
+
+## Adding discount to all cart items of a user
+
+If a user wants to use discount, after validating the coupon, we update the discount field of all the cart items. However price remains the same but when paying, we calculate the price using formula, $$ final \space price \space = price \times discount \space / \space 100 $$
+
+Discount is in percentage.
+
+**_Request:_**
+
+```
+POST api/cart/discount
+
+Authorization: Bearer <token>
+```
+
+_request body:_
+
+```json
+// To apply 20% discount to all the cart items
+{
+  "discount": "20"
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Successfully updated discount!"
+}
+```
+
+# Profile
+
+In the database profile is where your address, contact info etc are stored for payment and delivery.
+
+## Getting the profile for current user
+
+**_Request:_**
+
+```
+GET api/profile
+
+Authorization: Bearer <token>
+```
+
+**_Response:_**
+
+```json
+{
+  "_id": "60f32f3bc6a34d0015dc5b95",
+  "phone": "01988603156",
+  "address1": "adf",
+  "address2": "dfd",
+  "city": "Dhaka",
+  "postcode": 1216,
+  "country": "Bangladesh",
+  "user": "60ef0176b8d3dc1cfa4d09b1",
+  "__v": 0
+}
+```
+
+## Updating the profile for current user
+
+If profile info does not exist, creates a new one otherwise updates the existing.
+
+**_Request_**
+
+```
+POST api/profile
+
+headers:
+Authorization: Bearer <token>
+```
+
+_request body:_
+
+```json
+{
+  "phone": "01955603156",
+  "address1": "adf",
+  "address2": "dfd",
+  "city": "Dhaka",
+  "postcode": 1216,
+  "country": "Bangladesh"
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "message": "Updated successfully!"
+}
+```
+
+# Payment
+
+User sends a payment init request that returns a gateway url (usual SSLCOMMERZ stuff)
+
+## Initializing a payment
+
+**_Request:_**
+
+```
+GET api/payment
+
+headers:
+Authorization: Bearer <token>
+```
+
+**_Response:_**
+
+```json
+{
+  "status": "SUCCESS",
+  "failedreason": "",
+  "sessionkey": "CD771BB2D1CDFBC3443AE97224BCCC35",
+  "gw": {
+    "visa": "city_visa,ebl_visa,visacard",
+    "master": "city_master,ebl_master,mastercard",
+    "amex": "city_amex,amexcard",
+    "othercards": "qcash,fastcash",
+    "internetbanking": "city,bankasia,ibbl,mtbl",
+    "mobilebanking": "dbblmobilebanking,bkash,nagad,abbank,ibbl"
+  },
+  "redirectGatewayURL": "https://sandbox.sslcommerz.com/gwprocess/v4/bankgw/indexhtml.php?mamount=4.00&ssl_id=2109192249041m3a7EAzosLNord&Q=REDIRECT&SESSIONKEY=CD771BB2D1CDFBC3443AE97224BCCC35&tran_type=success&cardname=",
+  "directPaymentURLBank": "",
+  "directPaymentURLCard": "",
+  "directPaymentURL": "",
+  "redirectGatewayURLFailed": "",
+  "GatewayPageURL": "https://sandbox.sslcommerz.com/EasyCheckOut/testcdecd771bb2d1cdfbc3443ae97224bccc35",
+  "storeBanner": "https://sandbox.sslcommerz.com/stores/logos/demoLogo.png",
+  "storeLogo": "https://sandbox.sslcommerz.com/stores/logos/demoLogo.png",
+  "store_name": "Demo"
+}
+
+// And there are lot more but I showed the important ones
+```
+
+Use the redirect URL to do your stuff.
+
+# Coupon
+
+Using coupon codes, users can get discount.
+Coupon code can be created and viewed only by admins.
+
+## Creating a coupon
+
+User must be admin.
+
+**_Request:_**
+
+```
+POST api/coupon
+
+headers:
+Authorization: Bearer <token>
+```
+
+_request body:_
+
+```json
+{
+  "name": "20% off",
+  "discount": "20",
+  "code": "123ADF"
+}
+```
+
+**_Response:_**
+
+```json
+{
+  "data": {
+    "_id": "61476c374bc9ea0016951045",
+    "name": "20% off",
+    "discount": 20,
+    "code": "123ADF"
+  },
+  "message": "Created a coupon successfully"
+}
+```
+
+## Viewing the coupons
+
+Only admin type users can view the coupons
+
+**_Request:_**
+
+```
+GET api/coupon
+
+headers:
+Authorization: Bearer <token>
+```
+
+**_Response:_**
+
+```json
+[
+  {
+    "_id": "60f53f419f99c7001543d07e",
+    "name": "Mega offer",
+    "code": "X2BY0S4",
+    "discount": 20,
+    "createdAt": "2021-07-19T09:00:49.227Z",
+    "updatedAt": "2021-07-19T09:00:49.227Z",
+    "__v": 0
+  },
+  {
+    "_id": "60f5401bdf5a1b0015b8aa3f",
+    "name": "Omega offer",
+    "code": "T0BY0S4",
+    "discount": 30,
+    "createdAt": "2021-07-19T09:04:27.998Z",
+    "updatedAt": "2021-07-19T09:04:27.998Z",
+    "__v": 0
+  },
+  {
+    "_id": "61476c374bc9ea0016951045",
+    "name": "20% off",
+    "discount": 20,
+    "code": "123ADF",
+    "createdAt": "2021-09-19T16:58:31.265Z",
+    "updatedAt": "2021-09-19T16:58:31.265Z",
+    "__v": 0
+  }
+]
+```
+
+## Validating a coupon
+
+all users can validate a coupon
+
+**_Request:_**
+
+```
+POST api/coupon/validate
+
+headers:
+Authorization: Bearer <token>
+```
+
+_request body:_
+
+```json
+{
+  "code": "123ADF"
+}
+```
+
+**_Response:_**
+
+If code is correct, it will return all info related to the coupon.
+
+```json
+{
+  "_id": "61476c374bc9ea0016951045",
+  "name": "20% off",
+  "discount": 20,
+  "code": "123ADF",
+  "createdAt": "2021-09-19T16:58:31.265Z",
+  "updatedAt": "2021-09-19T16:58:31.265Z",
+  "__v": 0
+}
+```
