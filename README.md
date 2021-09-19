@@ -1,6 +1,6 @@
 This is the backend for e-commerce project showed in fsmern course bohubrihi.
 
-# Availabe API endpoint list:
+# Available API endpoint list:
 
 1. <details><summary><code>/api/oauth</code></summary>
 
@@ -10,7 +10,6 @@ This is the backend for e-commerce project showed in fsmern course bohubrihi.
       2. `/redirect`
          - `GET`
    2. `/facebook`
-
       1. `/`
          - `GET`
       2. `/redirect`
@@ -26,6 +25,7 @@ This is the backend for e-commerce project showed in fsmern course bohubrihi.
       - `POST`
    3. `/purchase-history`
       - `GET`
+
    </details>
 
 3. <details><summary><code>/api/category</code></summary>
@@ -128,6 +128,8 @@ Request response was used for this.
 
 ### Sign up
 
+**_Request:_**
+
 ```
 POST /api/user/signup
 ```
@@ -144,6 +146,8 @@ request body (json data) :
 
 ### Sign in
 
+**_Request:_**
+
 ```
 POST /api/user/signin
 ```
@@ -157,11 +161,12 @@ request body:
 }
 ```
 
-response (json data) :
+**_Response:_**
 
 ```json
 {
-  "message": "Registration Successful!", // Login Successful for signin
+  // "Login Successful" for signin
+  "message": "Registration Successful!",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTQ2NjY5ZTAyNTRmYTAwMTVhMGNhYzEiLCJlbWFpbCI6ImplcnJ5QGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwibmFtZSI6IlRvbSBKZXJyeSIsImlhdCI6MTYzMjAwMzc0MiwiZXhwIjoxNjMyNjA4NTQyfQ.Dj70LNNYpdjDS7qfDVWdIoVRrV8WZjeX1sq5TK-SiIg",
   "user": {
     "_id": "6146669e0254fa0015a0cac1",
@@ -173,7 +178,7 @@ response (json data) :
 
 # Purchase history of an user
 
-Request:
+**_Request:_**
 
 ```
 GET /api/user/purchase-history
@@ -182,7 +187,7 @@ headers:
 Authorization: "Bearer <token>"
 ```
 
-Response:
+**_Response:_**
 
 ```json
 // All the orders sorted by createdAt desc
@@ -223,13 +228,13 @@ Response:
 ]
 ```
 
-# Category of producs
+# Category of products
 
 ## Creating new category
 
 You have to be admin type user to create new category
 
-Request:
+**_Request:_**
 
 ```
 POST /api/category/
@@ -246,7 +251,7 @@ request body:
 }
 ```
 
-Response:
+**_Response:_**
 
 ```json
 {
@@ -284,3 +289,249 @@ Response:
 ```
 
 # Products
+
+## Creating/Adding new product
+
+Admin type user required. Request body have to be form data because we're sending image.
+
+**_Request:_**
+
+```
+POST /api/product
+
+headers:
+Authorization: "Bearer <token>"
+```
+
+request body example:
+
+| Key         | Value                                         |
+| ----------- | --------------------------------------------- |
+| name        | Noodles                                       |
+| description | maggy noodles, khaite moxa                    |
+| category    | 60ef405e486a6ad7d7b5b39d (id of category)     |
+| quantity    | 600                                           |
+| prize       | 120                                           |
+| photo       | noodles_picture_12022020.png (only one photo) |
+
+**_Response:_**
+
+```json
+{
+  "message": "Product successfully created",
+  "data": {
+    "_id": "6147150610d7d80016da7bed",
+    "name": "Noodles",
+    "description": "maggy noodles",
+    "price": 120,
+    "category": "60ef405e486a6ad7d7b5b39d",
+    "quantity": 600
+  }
+}
+```
+
+## Getting the products
+
+**_Request:_**
+
+No authorization is needed.
+
+```
+GET api/product?order=desc&sortBy=name&limit=2
+```
+
+Available query parameters:
+
+| Parameter | Possible value                      |
+| --------- | ----------------------------------- |
+| order     | `desc` , `asc`                      |
+| limit     | `10`, `20`                          |
+| sortBy    | `name`, `quantity`, `price`, `sold` |
+
+**_Response:_**
+
+```json
+[
+  {
+    "sold": 5,
+    "_id": "60f32e9ec6a34d0015dc5b59",
+    "name": "Pant",
+    "price": 800,
+    "quantity": 17,
+    "category": {
+      "name": "Clothes",
+      "createdAt": "2021-07-17T19:07:19.721Z"
+    },
+    "createdAt": "2021-07-17T19:25:18.492Z",
+    "updatedAt": "2021-07-19T20:57:34.584Z",
+    "__v": 0
+  },
+  {
+    "sold": 0,
+    "_id": "60f5f622029713001519748a",
+    "name": "Panjabi",
+    "price": 1499,
+    "quantity": 20,
+    "category": {
+      "name": "Clothes",
+      "createdAt": "2021-07-17T19:07:19.721Z"
+    },
+    "createdAt": "2021-07-19T22:01:06.877Z",
+    "updatedAt": "2021-07-19T22:01:06.877Z",
+    "__v": 0
+  }
+]
+```
+
+## Getting a certain product
+
+**_Request:_**
+
+```
+GET api/product/60f5f622029713001519748a
+```
+
+**_Response:_**
+
+```json
+{
+  "sold": 0,
+  "_id": "60f5f622029713001519748a",
+  "name": "Panjabi",
+  "description": "Boys pinky panjabi",
+  "price": 1499,
+  "quantity": 20,
+  "category": {
+    "name": "Clothes"
+  },
+  "reviews": [],
+  "createdAt": "2021-07-19T22:01:06.877Z",
+  "updatedAt": "2021-07-19T22:01:06.877Z",
+  "__v": 0
+}
+```
+
+## Editing a certain product
+
+**_Request:_**
+
+Admin type user is required.
+
+```
+PUT api/product/60f5f622029713001519748a
+
+headers:
+Authorization: "Bearer <token>"
+```
+
+request body example:
+
+| Key         | Value                        |
+| ----------- | ---------------------------- |
+| name        | Mama Noodles                 |
+| description | khaite moxa                  |
+| category    | 60ef405e486a6ad7d7b5b39d     |
+| quantity    | 591                          |
+| prize       | 120                          |
+| photo       | noodles_picture_12022020.png |
+
+**_Response:_**
+
+```json
+{
+  "message": "Successfully updated product!"
+}
+```
+
+## Getting the photo of a certain product
+
+Normally image of a product is not sent when GET request for a product is received because its too large in size. So we use a particular route just for getting the photo when needed.
+
+**_Request:_**
+
+```
+// https://<backend>.com/api/product/photo/:id_of_product
+
+GET api/product/photo/60f5f622029713001519748a
+```
+
+**_Response:_**
+
+Sends the photo as response.
+
+![photo of noodles](https://guarded-lake-12126.herokuapp.com/api/product/photo/6147150610d7d80016da7bed)
+
+## Filtering the products
+
+We've seen getting the products with some query parameters. If we want more complex filtering we use this route.
+
+**_Request:_**
+
+No authorization needed.
+
+```
+POST api/product/filter
+```
+
+request body:
+
+```json
+{
+   "order" : "desc",
+   "sortBy" : "name",
+   "limit" : "20",
+   "skip" : "10",
+   "filters" : {
+      "price" : ["800", "1500"],
+      "category" : ["60ef405e486a6ad7d7b5b39d", "60ef405e486a6ad7d7b5b312"],
+   },
+   "searchName" : "Panjabi"
+}
+
+
+PS: price array must have 2 elements, those products will be sent which are >= first value and <= second value.
+```
+
+**_Response:_**
+All the products satisfying the filters will be sent
+
+```json
+[
+  {
+    "sold": 0,
+    "_id": "60f5f622029713001519748a",
+    "name": "Panjabi",
+    "description": "Boys pinky panjabi",
+    "price": 1499,
+    "quantity": 20,
+    "category": {
+      "name": "Clothes"
+    },
+    "reviews": [],
+    "createdAt": "2021-07-19T22:01:06.877Z",
+    "updatedAt": "2021-07-19T22:01:06.877Z",
+    "__v": 0
+  },
+  {
+    "sold": 0,
+    "_id": "60f5f622029713001519748a",
+    "name": "Panjabi",
+    "description": "Black panjabi",
+    "price": 1299,
+    "quantity": 10,
+    "category": {
+      "name": "Clothes"
+    },
+    "reviews": [],
+    "createdAt": "2021-07-19T22:01:06.877Z",
+    "updatedAt": "2021-07-19T22:01:06.877Z",
+    "__v": 0
+  }
+]
+```
+
+## Adding review to a certain product
+
+***Request:***
+
+***Response:***
