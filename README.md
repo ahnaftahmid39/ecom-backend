@@ -758,7 +758,7 @@ Authorization: Bearer <token>
 
 ## Adding discount to all cart items of a user
 
-If a user wants to use discount, after validating the coupon, we update the discount field of all the cart items. However price remains the same but when paying, we calculate the price using formula, $$ final \space price \space = price \times discount \space / \space 100 $$
+If a user wants to use discount, after validating the coupon, we update the discount field of all the cart items. However price remains the same but when paying, we calculate the price using formula, `final price = price * discount / 100`
 
 Discount is in percentage.
 
