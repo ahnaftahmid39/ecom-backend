@@ -7,8 +7,10 @@ const paymentRouter = require('../routers/paymentRouter');
 const couponRouter = require('../routers/couponRouter');
 const googleRouter = require('../routers/oauth/googleRouter');
 const facebookRouter = require('../routers/oauth/facebookRouter');
+const helloRouter = require('../routers/helloRouter')
 
 module.exports = (app) => {
+  app.use('/', helloRouter)
   app.use('/auth/google', googleRouter);
   app.use('/auth/facebook', facebookRouter);
   app.use('/api/oauth/google', googleRouter);
